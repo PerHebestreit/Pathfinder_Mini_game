@@ -150,7 +150,7 @@ def get_exp(npc_levels, pc_levels):
         print('error')
 
 
-while terminate != 'yes' or total_exp >= 1000:
+while terminate != 'yes' and total_exp <= 1000:
     total_mob = []
     encounter_exp = 0
     exp_budget = 0
