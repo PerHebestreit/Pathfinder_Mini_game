@@ -97,6 +97,27 @@ income = {
     20: 490000
 }
 
+def getEncounterDifficulty(threat_level):
+    
+    if threat_level == 'trivial':
+        exp_budget = 10 * party_size
+        exp_reward = 40
+    elif threat_level == 'low':
+        exp_budget = 15 * party_size
+        exp_reward = 60
+    elif threat_level == 'moderate':
+        exp_budget = 20 * party_size
+        exp_reward = 80
+    elif threat_level == 'severe':
+        exp_budget = 30 * party_size
+        exp_reward = 120
+    elif threat_level == 'extreme':
+        exp_budget = 40 * party_size
+        exp_reward = 160
+
+    return exp_budget, exp_reward
+
+
 
 if environment == 'Ruins 1':
     height = 34
@@ -159,41 +180,17 @@ while terminate != 'yes' and total_exp <= 1000:
     happiness = ''
     threat_level = ''
     random_choice = ['trivial', 'low', 'moderate', 'severe', 'extreme']
+    
     while exp_budget == 0:
+
         threat_level = input('Threat: ').lower()
-        if threat_level == 'trivial':
-            exp_budget = 10 * party_size
-            exp_reward = 40
-        elif threat_level == 'low':
-            exp_budget = 15 * party_size
-            exp_reward = 60
-        elif threat_level == 'moderate':
-            exp_budget = 20 * party_size
-            exp_reward = 80
-        elif threat_level == 'severe':
-            exp_budget = 30 * party_size
-            exp_reward = 120
-        elif threat_level == 'extreme':
-            exp_budget = 40 * party_size
-            exp_reward = 160
-        elif threat_level == 'random':
+
+        if threat_level == 'random':
             threat_level = random.choice(random_choice)
-            if threat_level == 'trivial':
-                exp_budget = 10 * party_size
-                exp_reward = 40
-            elif threat_level == 'low':
-                exp_budget = 15 * party_size
-                exp_reward = 60
-            elif threat_level == 'moderate':
-                exp_budget = 20 * party_size
-                exp_reward = 80
-            elif threat_level == 'severe':
-                exp_budget = 30 * party_size
-                exp_reward = 120
-            elif threat_level == 'extreme':
-                exp_budget = 40 * party_size
-                exp_reward = 160
-        else:
+            exp_budget,exp_reward = getEncounterDifficulty(threat_level)
+        elif threat_level in random_choice:
+            exp_budget,exp_reward = getEncounterDifficulty(threat_level)
+        else:   
             print('''Choose between:
 Trivial
 Low
@@ -201,6 +198,7 @@ Moderate
 Severe
 Extreme
 or Random''')
+    
     while encounter_exp != exp_budget:
         npc_level = random.randint(pc_level - 4, pc_level + 4)
         temp = get_exp(npc_level, pc_level)
@@ -210,7 +208,9 @@ or Random''')
         if encounter_exp == exp_budget - 5:
             encounter_exp = 0
             total_mob = []
+            
     print(f'Environment: {environment}')
+    
     while happiness != 'yes':
         monster_group = []
         for mob in total_mob:
@@ -238,6 +238,7 @@ or Random''')
         for enemies in monster_group:
             print(f'{enemies} | Spawning: W:{random.randint(1, width)} H:{random.randint(1, height)}')
         happiness = input("Happy with these Mob's?: ").lower()
+    
     value = (income[pc_level] / 4) / 1000
     pc_gp_reward = value * exp_reward
     party_gp_reward = pc_gp_reward * party_size
@@ -248,6 +249,7 @@ or Random''')
     total_pc_gp += pc_gp_reward
     total_exp += exp_reward
     terminate = input("Done?: ")
+
 print(f'Total exp so far: {total_exp}')
 print(f'Total Gp PC: {total_pc_gp}')
 print(f'Total Gp Party: {total_party_gp}')
