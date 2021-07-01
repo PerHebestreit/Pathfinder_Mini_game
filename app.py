@@ -1,3 +1,4 @@
+from os import close
 import random
 import json
 
@@ -60,10 +61,8 @@ def getEncounterDifficulty(threat_level):
     return exp_budget, exp_reward
 
 def getMonster(monster_Level, list = "monsters"):
-     with open("Monsters.json", "r") as m:
-            jFile = json.load(m)
-            allMonsters = jFile[list]
-            return random.choice(allMonsters[str(monster_Level)])
+    allMonsters = jsonMonsters[list]
+    return random.choice(allMonsters[str(monster_Level)])
 
 def get_exp(npc_levels, pc_levels):
     if npc_levels == pc_levels:
@@ -161,6 +160,9 @@ or Random''')
 
     setMapDimensions()   
     print(f'Environment: {environment}')
+
+    monstersFile = open("Monsters.json", "r")
+    jsonMonsters = json.load(monstersFile)
     
     while happiness != 'yes':
         monster_group = []
@@ -187,6 +189,8 @@ or Random''')
         for enemies in monster_group:
             print(f'{enemies} | Spawning: W:{random.randint(1, width)} H:{random.randint(1, height)}')
         happiness = input("Happy with these Mob's?: ").lower()
+    
+    monstersFile.close()
     
     value = (income[pc_level] / 4) / 1000
     pc_gp_reward = value * exp_reward
